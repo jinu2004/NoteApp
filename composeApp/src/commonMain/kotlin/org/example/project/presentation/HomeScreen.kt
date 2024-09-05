@@ -24,7 +24,6 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
@@ -72,21 +71,7 @@ class HomeScreen(private val navController: NavController) {
 
         val viewModel = koinViewModel<MainViewModel>()
 
-        Scaffold(floatingActionButton = {
-            FloatingActionButton(
-                onClick = { navController.navigate(route = Screens.DetailNote.withArgs("empty")) },
-                containerColor = Color.White,
-                contentColor = Color.Black,
-                shape = RoundedCornerShape(20.dp),
-                elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 5.dp),
-                modifier = Modifier.border(
-                    BorderStroke(width = 3.dp, Color.Black),
-                    shape = RoundedCornerShape(20.dp)
-                ).width(80.dp).height(80.dp)
-            ) {
-                Icon(Icons.Outlined.Add, "", modifier = Modifier.size(50.dp))
-            }
-        }, floatingActionButtonPosition = FabPosition.Center) {
+        Scaffold {
             Column(
                 modifier = Modifier.fillMaxSize()
             ) {
@@ -111,6 +96,19 @@ class HomeScreen(private val navController: NavController) {
                             color = Color(0xFF000000),
                         )
                     )
+                    FloatingActionButton(
+                        onClick = { navController.navigate(route = Screens.DetailNote.withArgs("empty")) },
+                        containerColor = Color.White,
+                        contentColor = Color.Black,
+                        shape = RoundedCornerShape(20.dp),
+                        elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 5.dp),
+                        modifier = Modifier.border(
+                            BorderStroke(width = 3.dp, Color.Black),
+                            shape = RoundedCornerShape(20.dp)
+                        ).width(80.dp).height(80.dp)
+                    ) {
+                        Icon(Icons.Outlined.Add, "", modifier = Modifier.size(50.dp))
+                    }
                 }
 
                 Row(
@@ -181,7 +179,7 @@ class HomeScreen(private val navController: NavController) {
 
 
 
-                var selectedItemIndex by remember { mutableIntStateOf(category.size + 1) }
+                var selectedItemIndex by remember { mutableIntStateOf(0) }
 
 
                 LazyRow(
@@ -190,38 +188,6 @@ class HomeScreen(private val navController: NavController) {
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
 
-                    if (category.isNotEmpty()) {
-                        item {
-                            Card(
-                                onClick = {
-                                    selectedItemIndex = category.size + 1
-                                    viewModel.onEvent(UiEvents.FilterAction("All"))
-                                },
-                                shape = RoundedCornerShape(size = 15.dp),
-                                border = BorderStroke(width = 2.dp, color = Color.Black),
-                                modifier = Modifier.wrapContentSize(),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = if (selectedItemIndex == category.size + 1) Color(
-                                        0xFFD3FC8F
-                                    ) else Color.Transparent
-                                )
-                            ) {
-                                Text(
-                                    text = "All",
-                                    style = TextStyle(
-                                        fontSize = 20.sp,
-                                        fontFamily = FontFamily(Font(Res.font.roboto_medium)),
-                                        fontWeight = FontWeight(600),
-                                        color = Color(0xFF000000),
-                                    ),
-                                    modifier = Modifier.padding(
-                                        horizontal = 20.dp,
-                                        vertical = 12.dp
-                                    )
-                                )
-                            }
-                        }
-                    }
                     category.forEachIndexed { index, it ->
                         item {
                             Card(

@@ -21,27 +21,9 @@ class MainViewModel(private val databaseSource: DatabaseService) : ViewModel() {
     private var category = mutableSetOf<String>()
 
 
+
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            _uiState.update { uiState ->
-                databaseSource.getAllNote().forEach {
-                    allNote.add(
-                        Note(
-                            heading = it.heading,
-                            date = it.date,
-                            note = it.note,
-                            category = it.category,
-                            color = it.color,
-                            id = it._id
-                        )
-                    )
-                    category.add(it.category)
-                }
-
-
-                uiState.copy(note = allNote, filterData = category)
-            }
-        }
+        updateAll()
     }
 
 
@@ -157,9 +139,11 @@ class MainViewModel(private val databaseSource: DatabaseService) : ViewModel() {
                     )
                     category.add(it.category)
                 }
+                if (category.isNotEmpty()) {
+                    category.add("All")
+                }
 
-
-                uiState.copy(note = allNote, filterData = category)
+                uiState.copy(note = allNote, filterData = category.sorted().toMutableSet())
             }
         }
     }
